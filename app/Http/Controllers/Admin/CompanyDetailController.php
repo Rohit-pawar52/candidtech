@@ -12,10 +12,25 @@ class CompanyDetailController extends BaseCrudController
     protected array $fields = [
         'phone' => ['label' => 'Phone', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
         'email' => ['label' => 'Email', 'type' => 'email', 'rules' => 'nullable|email|max:255'],
-        'address' => ['label' => 'Address', 'type' => 'textarea', 'rules' => 'nullable|string'],
+        'address' => ['label' => 'Address', 'type' => 'ckeditor', 'rules' => 'nullable|string'],
         'facebook' => ['label' => 'Facebook URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
         'twitter' => ['label' => 'Twitter URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
         'instagram' => ['label' => 'Instagram URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
         'linkedin' => ['label' => 'LinkedIn URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
     ];
+
+    protected function validationRules(): array
+    {
+        $rules = parent::validationRules();
+        $rules['address'] = [
+            'nullable',
+            'string',
+            function ($attribute, $value, $fail) {
+                if ($value && \App\Helpers\HtmlHelper::wordCount($value) > 200) {
+                    $fail('The address may not be greater than 200 words.');
+                }
+            },
+        ];
+        return $rules;
+    }
 }

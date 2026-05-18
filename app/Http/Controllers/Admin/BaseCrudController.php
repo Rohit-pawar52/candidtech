@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\HtmlHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -42,6 +43,7 @@ abstract class BaseCrudController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate($this->validationRules());
+        $data = $this->sanitizeHtmlFields($data);
         $data = $this->processFileUploads($request, $data);
         $this->newModel()->create($data);
 
@@ -77,6 +79,7 @@ abstract class BaseCrudController extends Controller
     {
         $record = $this->findRecord($id);
         $data = $request->validate($this->validationRules());
+        $data = $this->sanitizeHtmlFields($data);
         $data = $this->processFileUploads($request, $data, $record);
         $record->update($data);
 
@@ -103,6 +106,20 @@ abstract class BaseCrudController extends Controller
         }
 
         return $rules;
+    }
+
+    /**
+     * Sanitize HTML fields using CKEditor content
+     */
+    protected function sanitizeHtmlFields(array $data): array
+    {
+        foreach ($this->fields as $name => $field) {
+            if ($field['type'] === 'ckeditor' && isset($data[$name])) {
+                $data[$name] = HtmlHelper::sanitize($data[$name]);
+            }
+        }
+
+        return $data;
     }
 
     protected function processFileUploads(Request $request, array $data, ?Model $record = null): array

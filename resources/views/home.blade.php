@@ -75,7 +75,7 @@ if (! function_exists('asset_image_url')) {
     <div class="item">
         <img src="{{ asset_image_url($banner->background_image ?? '', asset('upload/s1.jpeg')) }}" onerror="this.src='{{ asset('upload/s1.jpeg') }}'; this.onerror=null;">
         <div class="desc">
-            <h1>{{ $banner->title ?? 'Design the space' }}<br>{{ $banner->subtitle ?? 'Engineer the experience' }}</h1>
+            <h1>{{ $banner->title ?? 'Design the space' }}<br>{!! $banner->subtitle ?? 'Engineer the experience' !!}</h1>
             @if(!empty($banner->button_text))
                 <a class="btn1" href="{{ $banner->button_url ?? '#' }}">{{ $banner->button_text }}</a>
             @endif
@@ -98,7 +98,7 @@ if (! function_exists('asset_image_url')) {
                     <h2>Candidtech Interiors</h2>
                 </div>
                 <div class="text-justify mb-4" data-aos="fade-up" data-aos-duration="700">
-                    <p>{{ $about->content ?? 'At CandidTech, as one of the UAE’s leading fit-out contractors, we create luxury spaces where creativity is engineered to perfection.' }}</p>
+                    {!! $about->content ?? '<p>At CandidTech, as one of the UAE\'s leading fit-out contractors, we create luxury spaces where creativity is engineered to perfection.</p>' !!}
                 </div>
                 <div class="row g-4 mb-4">
                     <div class="col-md-6">
@@ -132,7 +132,7 @@ if (! function_exists('asset_image_url')) {
                     <img class="w-100" src="{{ asset_image_url($service->icon ?? '', asset('upload/service1.jpeg')) }}" alt="{{ $service->title }}" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;">
                     <div class="desc">
                         <h4>{{ $service->title }}</h4>
-                        <p>{{ $service->description }}</p>
+                        <div class="service-description">{!! $service->description ?? '' !!}</div>
                         <span class="btn"><i class="fa fa-arrow-right"></i></span>
                     </div>
                 </a>
@@ -206,7 +206,7 @@ if (! function_exists('asset_image_url')) {
                                 </div>
                                 <div class="feature-content">
                                     <h4 class="feature-title">{{ $feature->title }}</h4>
-                                    <p>{{ $feature->description }}</p>
+                                    <div class="feature-description">{!! $feature->description ?? '' !!}</div>
                                 </div>
                             </div>
                         </div>
@@ -240,7 +240,7 @@ if (! function_exists('asset_image_url')) {
                         </div>
                     </div>
                     <div class="item-desc">
-                        <p>{{ $testimonial->quote }}</p>
+                        {!! $testimonial->quote ?? '' !!}
                     </div>
                     <div class="item-quote">
                         <i class="fa fa-quote-left"></i>
@@ -297,7 +297,7 @@ if (! function_exists('asset_image_url')) {
                 <div class="col-md-4" data-aos="fade-left" data-aos-duration="700">
                     <h4>Connect With Us</h4>
                     <ul class="footer-contact p-0 m-0">
-                        <li><i class="fas fa-map-marker-alt"></i> {{ $company->address ?? 'Office No. 5, 2nd Floor, Arif 7 Bintoak Building, Karama - Dubai' }}</li>
+                        <li><i class="fas fa-map-marker-alt"></i> {!! $company->address ?? 'Office No. 5, 2nd Floor, Arif 7 Bintoak Building, Karama - Dubai' !!}</li>
                         <li><a href="tel:{{ $company->phone ?? '+971 555309790' }}"><i class="fas fa-phone"></i>{{ $company->phone ?? '+971 555309790' }}</a></li>
                         <li><a href="mailto:{{ $company->email ?? 'info@candidtecheim.com' }}"><i class="far fa-envelope"></i>{{ $company->email ?? 'info@candidtecheim.com' }}</a></li>
                     </ul>

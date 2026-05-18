@@ -3,6 +3,7 @@
 @section('title', $record ? 'Edit ' . $title : 'Create ' . $title)
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ckeditor5@latest/build/ckeditor5.min.css">
 <style>
     .image-upload-area {
         border: 2px dashed #ccc;
@@ -32,6 +33,9 @@
     .image-upload-input {
         display: none;
     }
+    .ck-editor__editable {
+        min-height: 200px;
+    }
 </style>
 
 <div class="card shadow-sm">
@@ -53,7 +57,9 @@
                 @endphp
                 <div class="mb-3">
                     <label class="form-label">{{ $field['label'] }}</label>
-                    @if($field['type'] === 'textarea')
+                    @if($field['type'] === 'ckeditor')
+                        <textarea id="editor-{{ $name }}" class="form-control ckeditor-field" name="{{ $name }}">{{ old($name, $record->{$name} ?? '') }}</textarea>
+                    @elseif($field['type'] === 'textarea')
                         <textarea class="form-control" name="{{ $name }}" rows="4">{{ old($name, $record->{$name} ?? '') }}</textarea>
                     @elseif($field['type'] === 'file')
                         <div class="image-upload-area {{ $hasImage ? 'has-image' : '' }}" onclick="document.getElementById('file-{{ $name }}').click();">
@@ -83,6 +89,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/ckeditor5@latest/build/ckeditor5.umd.js"></script>
 <script>
 function previewImage(input, fieldName) {
     const uploadArea = input.closest('.mb-3').querySelector('.image-upload-area');
@@ -99,5 +106,30 @@ function previewImage(input, fieldName) {
     };
     reader.readAsDataURL(input.files[0]);
 }
+
+// Initialize CKEditor for all ckeditor fields
+document.addEventListener('DOMContentLoaded', function() {
+    const { ClassicEditor, Essentials, Paragraph, Bold, Italic, Underline, Heading, List, Link, BlockQuote, Alignment } = CKEDITOR;
+
+    document.querySelectorAll('.ckeditor-field').forEach(textarea => {
+        ClassicEditor
+            .create(textarea, {
+                plugins: [Essentials, Paragraph, Bold, Italic, Underline, Heading, List, Link, BlockQuote, Alignment],
+                toolbar: {
+                    items: [
+                        'heading', '|',
+                        'bold', 'italic', 'underline', '|',
+                        'alignment', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'blockQuote', 'link', '|',
+                        'undo', 'redo'
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error('CKEditor initialization failed:', error);
+            });
+    });
+});
 </script>
 @endsection

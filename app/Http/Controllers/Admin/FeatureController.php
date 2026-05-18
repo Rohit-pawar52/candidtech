@@ -12,6 +12,21 @@ class FeatureController extends BaseCrudController
     protected array $fields = [
         'icon' => ['label' => 'Icon/Image', 'type' => 'file', 'rules' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'],
         'title' => ['label' => 'Title', 'type' => 'text', 'rules' => 'required|string|max:255'],
-        'description' => ['label' => 'Description', 'type' => 'textarea', 'rules' => 'nullable|string'],
+        'description' => ['label' => 'Description', 'type' => 'ckeditor', 'rules' => 'nullable|string'],
     ];
+
+    protected function validationRules(): array
+    {
+        $rules = parent::validationRules();
+        $rules['description'] = [
+            'nullable',
+            'string',
+            function ($attribute, $value, $fail) {
+                if ($value && \App\Helpers\HtmlHelper::wordCount($value) > 300) {
+                    $fail('The description may not be greater than 300 words.');
+                }
+            },
+        ];
+        return $rules;
+    }
 }

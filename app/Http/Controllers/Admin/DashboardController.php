@@ -24,7 +24,7 @@ class DashboardController extends Controller
             'features' => Feature::count(),
             'projects' => Project::count(),
             'testimonials' => Testimonial::count(),
-            'faqs' => Faq::count(),
+            // 'faqs' => Faq::count(),
             'contactMessages' => ContactMessage::count(),
             'companyDetails' => CompanyDetail::count(),
         ];
