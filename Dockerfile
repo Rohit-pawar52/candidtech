@@ -32,10 +32,11 @@ rm -f bootstrap/cache/*.php\n\
 php artisan config:clear || true\n\
 php artisan cache:clear || true\n\
 php artisan route:clear || true\n\
-if php artisan migrate:status > /dev/null 2>&1; then\n\
-  php artisan migrate --force || true\n\
-else\n\
+if [ ! -f /var/www/html/.migrate-done ]; then\n\
   php artisan migrate:fresh --seed --force || true\n\
+  touch /var/www/html/.migrate-done\n\
+else\n\
+  php artisan migrate --force || true\n\
 fi\n\
 php artisan storage:link || true\n\
 chown -R www-data:www-data storage bootstrap/cache\n\
