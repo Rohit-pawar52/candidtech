@@ -23,7 +23,7 @@ class HtmlHelper
         }
 
         // Define allowed tags
-        $allowed_tags = '<p><strong><em><u><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><a><br><i><b>';
+        $allowed_tags = '<p><strong><em><u><h1><h2><h3><h4><h5><h6><ul><ol><li><blockquote><a><br><i><b><span><font>';
 
         // Strip all tags except allowed ones
         $sanitized = strip_tags($html, $allowed_tags);
@@ -78,25 +78,111 @@ class HtmlHelper
      */
     private static function removeUnsafeAttributes($node)
     {
-        // Only allow href for <a> tags, no other attributes
-        if ($node->nodeName === 'a') {
+        $href = null;
+        $color = null;
+        $style = null;
+
+        if ($node->hasAttribute('href') && $node->nodeName === 'a') {
             $href = $node->getAttribute('href');
-            // Clear all attributes
-            while ($node->attributes->length > 0) {
-                $node->removeAttribute($node->attributes->item(0)->name);
-            }
-            // Re-add href if it's safe
-            if ($href && static::isSafeUrl($href)) {
-                $node->setAttribute('href', $href);
-                $node->setAttribute('target', '_blank');
-                $node->setAttribute('rel', 'noopener noreferrer');
-            }
-        } else {
-            // Remove all attributes from other tags
-            while ($node->attributes && $node->attributes->length > 0) {
-                $node->removeAttribute($node->attributes->item(0)->name);
-            }
         }
+
+        if ($node->hasAttribute('color') && $node->nodeName === 'font') {
+            $color = $node->getAttribute('color');
+        }
+
+        if ($node->hasAttribute('style')) {
+            $style = static::sanitizeStyle($node->getAttribute('style'));
+        }
+
+        while ($node->attributes && $node->attributes->length > 0) {
+            $node->removeAttribute($node->attributes->item(0)->name);
+        }
+
+        if ($href && static::isSafeUrl($href)) {
+            $node->setAttribute('href', $href);
+            $node->setAttribute('target', '_blank');
+            $node->setAttribute('rel', 'noopener noreferrer');
+        }
+
+        if ($color && static::isSafeColor($color)) {
+            $node->setAttribute('color', $color);
+        }
+
+        if ($style) {
+            $node->setAttribute('style', $style);
+        }
+    }
+
+    /**
+     * Sanitize safe CSS style declarations
+     *
+     * @param string $style
+     * @return string|null
+     */
+    private static function sanitizeStyle($style)
+    {
+        $allowedProperties = [
+            'color',
+            'background-color',
+            'font-weight',
+            'font-style',
+            'text-decoration',
+            'text-align'
+        ];
+
+        $result = [];
+        foreach (explode(';', $style) as $declaration) {
+            if (!trim($declaration)) {
+                continue;
+            }
+
+            [$property, $value] = array_map('trim', explode(':', $declaration, 2) + [1 => '']);
+            $property = strtolower($property);
+            $value = trim($value);
+
+            if (!$property || !$value || !in_array($property, $allowedProperties, true)) {
+                continue;
+            }
+
+            if (in_array($property, ['color', 'background-color'], true)) {
+                if (!static::isSafeColor($value)) {
+                    continue;
+                }
+            }
+
+            if ($property === 'font-weight' && !preg_match('/^(normal|bold|bolder|lighter|[1-9]00)$/i', $value)) {
+                continue;
+            }
+
+            if ($property === 'font-style' && !in_array(strtolower($value), ['normal', 'italic', 'oblique'], true)) {
+                continue;
+            }
+
+            if ($property === 'text-decoration' && !in_array(strtolower($value), ['none', 'underline', 'line-through', 'overline'], true)) {
+                continue;
+            }
+
+            if ($property === 'text-align' && !in_array(strtolower($value), ['left', 'right', 'center', 'justify'], true)) {
+                continue;
+            }
+
+            $result[] = "$property: $value";
+        }
+
+        return $result ? implode('; ', $result) : null;
+    }
+
+    /**
+     * Check if color value is safe
+     *
+     * @param string $color
+     * @return bool
+     */
+    private static function isSafeColor($color)
+    {
+        $color = trim($color);
+
+        return preg_match('/^(#([0-9a-f]{3}|[0-9a-f]{6})|rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*(0|1|0?\.\d+))?\s*\)|[a-z]+)$/i', $color) === 1;
     }
 
     /**

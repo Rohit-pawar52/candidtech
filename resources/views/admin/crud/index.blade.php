@@ -40,7 +40,11 @@
                         @elseif($fields[$field]['type'] === 'file')
                             <small class="text-muted">No image</small>
                         @else
-                            {{ \Illuminate\Support\Str::limit($record->{$field} ?? '', 60) }}
+                            @if(in_array($fields[$field]['type'], ['textarea', 'ckeditor']))
+                                {{ \Illuminate\Support\Str::limit(strip_tags($record->{$field} ?? ''), 60) }}
+                            @else
+                                {{ \Illuminate\Support\Str::limit($record->{$field} ?? '', 60) }}
+                            @endif
                         @endif
                     </td>
                 @endforeach

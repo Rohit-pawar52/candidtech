@@ -26,6 +26,8 @@
                         <img src="{{ $imageUrl }}" alt="{{ $field['label'] }}" class="image-display" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;">
                     @elseif($field['type'] === 'file')
                         <small class="text-muted">No image</small>
+                    @elseif($field['type'] === 'ckeditor')
+                        {!! $record->{$name} !!}
                     @else
                         {{ $record->{$name} }}
                     @endif
