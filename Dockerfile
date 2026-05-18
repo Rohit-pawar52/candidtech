@@ -23,11 +23,9 @@ RUN composer install --no-dev --optimize-autoloader
 # Point Apache to /public
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Proper permissions for Laravel at RUNTIME
 RUN chown -R www-data:www-data /var/www/html
 
-# Startup script to fix permissions every container start
-# Startup script (runs when container starts, not build)
+# ✅ Startup script (runtime)
 RUN echo '#!/bin/bash\n\
 cd /var/www/html\n\
 rm -f bootstrap/cache/*.php\n\
@@ -35,6 +33,7 @@ php artisan config:clear || true\n\
 php artisan cache:clear || true\n\
 php artisan route:clear || true\n\
 php artisan migrate --force || true\n\
+php artisan db:seed --force || true\n\
 chown -R www-data:www-data storage bootstrap/cache\n\
 chmod -R 775 storage bootstrap/cache\n\
 apache2-foreground' > /start.sh
