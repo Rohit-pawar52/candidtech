@@ -3,6 +3,15 @@
 @section('title', $title . ' Details')
 
 @section('content')
+<style>
+    .image-display {
+        max-width: 400px;
+        max-height: 400px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+</style>
+
 <div class="card shadow-sm">
     <div class="card-body">
         <dl class="row">
@@ -10,10 +19,13 @@
                 <dt class="col-sm-3">{{ $field['label'] }}</dt>
                 <dd class="col-sm-9">
                     @if($field['type'] === 'file' && !empty($record->{$name}))
-                        <div class="mb-2">
-                            <a href="{{ asset('storage/' . $record->{$name}) }}" target="_blank" class="btn btn-sm btn-primary">View File</a>
-                            <br><small class="text-muted">{{ $record->{$name} }}</small>
-                        </div>
+                        @php
+                            $imagePath = $record->{$name};
+                            $imageUrl = \Illuminate\Support\Str::startsWith($imagePath, 'uploads/') ? asset('storage/' . $imagePath) : asset($imagePath);
+                        @endphp
+                        <img src="{{ $imageUrl }}" alt="{{ $field['label'] }}" class="image-display" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;">
+                    @elseif($field['type'] === 'file')
+                        <small class="text-muted">No image</small>
                     @else
                         {{ $record->{$name} }}
                     @endif

@@ -3,6 +3,14 @@
 @section('title', $title)
 
 @section('content')
+<style>
+    .table-image {
+        max-width: 100px;
+        max-height: 100px;
+        border-radius: 4px;
+    }
+</style>
+
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <h4>{{ $title }} List</h4>
     <a href="{{ route($routeName . '.create') }}" class="btn btn-primary">Add New</a>
@@ -22,7 +30,19 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 @foreach(array_keys($fields) as $field)
-                    <td>{{ \Illuminate\Support\Str::limit($record->{$field} ?? '', 60) }}</td>
+                    <td>
+                        @if($fields[$field]['type'] === 'file' && !empty($record->{$field}))
+                            @php
+                                $imagePath = $record->{$field};
+                                $imageUrl = \Illuminate\Support\Str::startsWith($imagePath, 'uploads/') ? asset('storage/' . $imagePath) : asset($imagePath);
+                            @endphp
+                            <img src="{{ $imageUrl }}" alt="{{ $field }}" class="table-image" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;">
+                        @elseif($fields[$field]['type'] === 'file')
+                            <small class="text-muted">No image</small>
+                        @else
+                            {{ \Illuminate\Support\Str::limit($record->{$field} ?? '', 60) }}
+                        @endif
+                    </td>
                 @endforeach
                 <td class="text-nowrap">
                     <a href="{{ route($routeName . '.edit', $record->id) }}" class="btn btn-sm btn-secondary">Edit</a>

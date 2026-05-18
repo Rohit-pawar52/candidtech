@@ -1,5 +1,22 @@
 @extends('layouts.app')
 
+@php
+if (! function_exists('asset_image_url')) {
+    function asset_image_url($path, $fallback)
+    {
+        if (empty($path)) {
+            return $fallback;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, 'uploads/')) {
+            return asset('storage/' . $path);
+        }
+
+        return asset($path);
+    }
+}
+@endphp
+
 @section('content')
 <header>
     <div class="topbar py-0 d-none d-sm-block bg-2">
@@ -56,7 +73,7 @@
 
 <div class="owl-slide owl-carousel">
     <div class="item">
-        <img src="@if(!empty($banner->background_image)){{ asset('storage/' . $banner->background_image) }}@else{{ asset('upload/s1.jpeg') }}@endif">
+        <img src="{{ asset_image_url($banner->background_image ?? '', asset('upload/s1.jpeg')) }}" onerror="this.src='{{ asset('upload/s1.jpeg') }}'; this.onerror=null;">
         <div class="desc">
             <h1>{{ $banner->title ?? 'Design the space' }}<br>{{ $banner->subtitle ?? 'Engineer the experience' }}</h1>
             @if(!empty($banner->button_text))
@@ -71,11 +88,7 @@
         <div class="row g-5">
             <div class="col-md-6" data-aos="fade-right" data-aos-duration="700">
                 <div class="about-img">
-                    @if(!empty($about->image))
-                        <figure class="shine"><img src="{{ asset('storage/' . $about->image) }}"></figure>
-                    @else
-                        <figure class="shine"><img src="{{ asset('upload/about1.jpeg') }}"></figure>
-                    @endif
+                    <figure class="shine"><img src="{{ asset_image_url($about->image ?? '', asset('upload/about1.jpeg')) }}" onerror="this.src='{{ asset('upload/about1.jpeg') }}'; this.onerror=null;"></figure>
                     <h2>Candidtech</h2>
                 </div>
             </div>
@@ -116,7 +129,7 @@
         <div class="owl-4 owl-carousel">
             @forelse($services as $service)
                 <a class="item" href="{{ $service->link ?? '#' }}">
-                    <img class="w-100" src="@if(!empty($service->icon)){{ asset('storage/' . $service->icon) }}@else{{ asset('upload/service1.jpeg') }}@endif" alt="{{ $service->title }}">
+                    <img class="w-100" src="{{ asset_image_url($service->icon ?? '', asset('upload/service1.jpeg')) }}" alt="{{ $service->title }}" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;">
                     <div class="desc">
                         <h4>{{ $service->title }}</h4>
                         <p>{{ $service->description }}</p>
@@ -186,9 +199,9 @@
                                 <span class="count"></span>
                                 <div class="icon">
                                     @if($feature->icon)
-                                        <img src="{{ asset('storage/' . $feature->icon) }}" alt="{{ $feature->title }}">
+                                        <img src="{{ asset_image_url($feature->icon ?? '', asset('upload/trust.png')) }}" alt="{{ $feature->title }}" onerror="this.src='{{ asset('upload/trust.png') }}'; this.onerror=null;">
                                     @else
-                                        <img src="{{ asset('upload/trust.png') }}" alt="Feature">
+                                        <img src="{{ asset('upload/trust.png') }}" alt="Feature" onerror="this.src='{{ asset('upload/trust.png') }}'; this.onerror=null;">
                                     @endif
                                 </div>
                                 <div class="feature-content">
@@ -219,7 +232,7 @@
                 <div class="item">
                     <div class="item-inner d-flex align-items-center gap-3">
                         <div class="item-thumb">
-                            <img src="@if(!empty($testimonial->avatar)){{ asset('storage/' . $testimonial->avatar) }}@else{{ asset('upload/face.jpg') }}@endif" alt="{{ $testimonial->name }}">
+                            <img src="{{ asset_image_url($testimonial->avatar ?? '', asset('upload/face.jpg')) }}" alt="{{ $testimonial->name }}" onerror="this.src='{{ asset('upload/face.jpg') }}'; this.onerror=null;">
                         </div>
                         <div class="item-content">
                             <h4>{{ $testimonial->name }}</h4>
@@ -253,7 +266,7 @@
         <div class="row g-4">
             @forelse($projects as $project)
                 <div class="col-md-4">
-                    <a class="item" href="@if(!empty($project->image)){{ asset('storage/' . $project->image) }}@else{{ asset('upload/service1.jpeg') }}@endif"><img src="@if(!empty($project->image)){{ asset('storage/' . $project->image) }}@else{{ asset('upload/service1.jpeg') }}@endif"></a>
+                    <a class="item" href="{{ asset_image_url($project->image ?? '', asset('upload/service1.jpeg')) }}"><img src="{{ asset_image_url($project->image ?? '', asset('upload/service1.jpeg')) }}" onerror="this.src='{{ asset('upload/service1.jpeg') }}'; this.onerror=null;"></a>
                 </div>
             @empty
                 <div class="col-md-12">
