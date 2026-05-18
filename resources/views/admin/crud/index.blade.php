@@ -13,9 +13,7 @@
 
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <h4>{{ $title }} List</h4>
-    @if(! in_array($routeName, ['admin.banners', 'admin.abouts', 'admin.company-details']))
-        <a href="{{ route($routeName . '.create') }}" class="btn btn-primary">Add New</a>
-    @endif
+    <a href="{{ route($routeName . '.create') }}" class="btn btn-primary @if(in_array($routeName, ['admin.banners', 'admin.abouts', 'admin.company-details'])) d-none @endif">Add New</a>
 </div>
 <table class="table table-bordered bg-white">
     <thead>
@@ -48,13 +46,11 @@
                 @endforeach
                 <td class="text-nowrap">
                     <a href="{{ route($routeName . '.edit', $record->id) }}" class="btn btn-sm btn-secondary">Edit</a>
-                    @if(! in_array($routeName, ['admin.banners', 'admin.abouts', 'admin.company-details']))
-                        <form action="{{ route($routeName . '.destroy', $record->id) }}" method="post" class="d-inline-block" onsubmit="return confirm('Delete this item?');">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    @endif
+                    <form action="{{ route($routeName . '.destroy', $record->id) }}" method="post" class="d-inline-block @if(in_array($routeName, ['admin.banners', 'admin.abouts', 'admin.company-details'])) d-none @endif" onsubmit="return confirm('Delete this item?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
                 </td>
             </tr>
         @empty
