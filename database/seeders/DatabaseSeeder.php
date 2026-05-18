@@ -33,19 +33,25 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        Banner::create([
-            'title' => 'Design the space',
-            'subtitle' => 'Engineer the experience',
-            'button_text' => 'Get a Quote',
-            'button_url' => '#contact',
-            'background_image' => 'upload/s1.jpeg',
-        ]);
+        Banner::updateOrCreate(
+            ['id' => 1],
+            [
+                'title' => 'Design the space',
+                'subtitle' => 'Engineer the experience',
+                'button_text' => 'Get a Quote',
+                'button_url' => '#contact',
+                'background_image' => 'upload/s1.jpeg',
+            ]
+        );
 
-        About::create([
-            'heading' => 'Candidtech Interiors',
-            'content' => 'At CandidTech, as one of the UAE’s leading fit-out contractors, we create luxury spaces where creativity is engineered to perfection. From villas and apartments to commercial offices, clinics, business centers, commercial restaurants, and retail fit-outs, we deliver seamless style, functionality, and flawless execution.',
-            'image' => 'upload/about1.jpeg',
-        ]);
+        About::updateOrCreate(
+            ['id' => 1],
+            [
+                'heading' => 'Candidtech Interiors',
+                'content' => 'At CandidTech, as one of the UAE\'s leading fit-out contractors, we create luxury spaces where creativity is engineered to perfection. From villas and apartments to commercial offices, clinics, business centers, commercial restaurants, and retail fit-outs, we deliver seamless style, functionality, and flawless execution.',
+                'image' => 'upload/about1.jpeg',
+            ]
+        );
 
         $services = [
             [
@@ -202,15 +208,18 @@ class DatabaseSeeder extends Seeder
             Faq::create($faq);
         }
 
-        CompanyDetail::create([
-            'phone' => '+971 555309790',
-            'email' => 'info@candidtecheim.com',
-            'address' => 'Office No. 5, 2nd Floor, Arif 7 Bintoak Building, Karama - Dubai',
-            'facebook' => 'https://facebook.com/candidtech',
-            'twitter' => 'https://twitter.com/candidtech',
-            'instagram' => 'https://instagram.com/candidtech',
-            'linkedin' => 'https://linkedin.com/company/candidtech',
-        ]);
+        CompanyDetail::updateOrCreate(
+            ['id' => 1],
+            [
+                'phone' => '+971 555309790',
+                'email' => 'info@candidtecheim.com',
+                'address' => 'Office No. 5, 2nd Floor, Arif 7 Bintoak Building, Karama - Dubai',
+                'facebook' => 'https://facebook.com/candidtech',
+                'twitter' => 'https://twitter.com/candidtech',
+                'instagram' => 'https://instagram.com/candidtech',
+                'linkedin' => 'https://linkedin.com/company/candidtech',
+            ]
+        );
 
         ContactMessage::create([
             'name' => 'Jane Doe',

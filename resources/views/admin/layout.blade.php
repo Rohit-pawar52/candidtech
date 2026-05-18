@@ -26,7 +26,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ route('admin.features.index') }}">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('admin.projects.index') }}">Projects</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('admin.testimonials.index') }}">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs.index') }}">FAQ</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="{{ route('admin.faqs.index') }}">FAQ</a></li> -->
                     <li class="nav-item"><a class="nav-link" href="{{ route('admin.company-details.index') }}">Company Details</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('admin.contact-messages.index') }}">Messages</a></li>
                 </ul>
