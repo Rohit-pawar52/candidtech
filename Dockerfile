@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
 
 # Enable rewrite and allow .htaccess
 RUN a2enmod rewrite
@@ -26,6 +26,8 @@ RUN echo '#!/bin/bash\n\
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache\n\
 apache2-foreground' > /start.sh
+
+RUN php artisan migrate --force || true
 
 RUN chmod +x /start.sh
 
