@@ -27,12 +27,17 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 RUN chown -R www-data:www-data /var/www/html
 
 # Startup script to fix permissions every container start
+# Startup script (runs when container starts, not build)
 RUN echo '#!/bin/bash\n\
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache\n\
+cd /var/www/html\n\
+rm -f bootstrap/cache/*.php\n\
+php artisan config:clear || true\n\
+php artisan cache:clear || true\n\
+php artisan route:clear || true\n\
+php artisan migrate --force || true\n\
+chown -R www-data:www-data storage bootstrap/cache\n\
+chmod -R 775 storage bootstrap/cache\n\
 apache2-foreground' > /start.sh
-
-RUN php artisan migrate --force || true
 
 RUN chmod +x /start.sh
 
