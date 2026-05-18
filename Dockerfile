@@ -34,6 +34,7 @@ php artisan cache:clear || true\n\
 php artisan route:clear || true\n\
 php artisan migrate --force || true\n\
 php artisan db:seed --force || true\n\
+php artisan storage:link || true\n\
 chown -R www-data:www-data storage bootstrap/cache\n\
 chmod -R 775 storage bootstrap/cache\n\
 apache2-foreground' > /start.sh
