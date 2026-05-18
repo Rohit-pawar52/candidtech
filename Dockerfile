@@ -1,7 +1,11 @@
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev unzip git curl \
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    libpq-dev \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip
 
 # Enable rewrite and allow .htaccess
