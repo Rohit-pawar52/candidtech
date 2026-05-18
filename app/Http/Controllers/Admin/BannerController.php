@@ -14,6 +14,6 @@ class BannerController extends BaseCrudController
         'subtitle' => ['label' => 'Subtitle', 'type' => 'textarea', 'rules' => 'nullable|string'],
         'button_text' => ['label' => 'Button Text', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
         'button_url' => ['label' => 'Button URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
-        'background_image' => ['label' => 'Background Image', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
+        'background_image' => ['label' => 'Background Image', 'type' => 'file', 'rules' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'],
     ];
 }

@@ -12,7 +12,7 @@ class ProjectController extends BaseCrudController
     protected array $fields = [
         'title' => ['label' => 'Title', 'type' => 'text', 'rules' => 'required|string|max:255'],
         'category' => ['label' => 'Category', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
-        'image' => ['label' => 'Image Path', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
+        'image' => ['label' => 'Project Image', 'type' => 'file', 'rules' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'],
         'url' => ['label' => 'Project URL', 'type' => 'url', 'rules' => 'nullable|url|max:255'],
     ];
 }

@@ -13,6 +13,6 @@ class TestimonialController extends BaseCrudController
         'name' => ['label' => 'Name', 'type' => 'text', 'rules' => 'required|string|max:255'],
         'position' => ['label' => 'Position', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
         'quote' => ['label' => 'Quote', 'type' => 'textarea', 'rules' => 'required|string'],
-        'avatar' => ['label' => 'Avatar Path', 'type' => 'text', 'rules' => 'nullable|string|max:255'],
+        'avatar' => ['label' => 'Avatar Image', 'type' => 'file', 'rules' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'],
     ];
 }
