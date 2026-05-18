@@ -3,7 +3,7 @@
 @section('title', $record ? 'Edit ' . $title : 'Create ' . $title)
 
 @section('content')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ckeditor5@latest/build/ckeditor5.min.css">
+
 <style>
     .image-upload-area {
         border: 2px dashed #ccc;
@@ -89,7 +89,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/ckeditor5@latest/build/ckeditor5.umd.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/latest/classic/ckeditor.js"></script>
 <script>
 function previewImage(input, fieldName) {
     const uploadArea = input.closest('.mb-3').querySelector('.image-upload-area');
@@ -109,12 +109,9 @@ function previewImage(input, fieldName) {
 
 // Initialize CKEditor for all ckeditor fields
 document.addEventListener('DOMContentLoaded', function() {
-    const { ClassicEditor, Essentials, Paragraph, Bold, Italic, Underline, Heading, List, Link, BlockQuote, Alignment } = CKEDITOR;
-
     document.querySelectorAll('.ckeditor-field').forEach(textarea => {
         ClassicEditor
             .create(textarea, {
-                plugins: [Essentials, Paragraph, Bold, Italic, Underline, Heading, List, Link, BlockQuote, Alignment],
                 toolbar: {
                     items: [
                         'heading', '|',
@@ -123,6 +120,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         'bulletedList', 'numberedList', '|',
                         'blockQuote', 'link', '|',
                         'undo', 'redo'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
                     ]
                 }
             })
