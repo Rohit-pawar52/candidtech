@@ -85,16 +85,19 @@
 
 <script>
 function previewImage(input, fieldName) {
+    const uploadArea = input.closest('.mb-3').querySelector('.image-upload-area');
     const placeholderUrl = "{{ asset('upload/service1.jpeg') }}";
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const area = input.parentElement;
-            area.innerHTML = '<img src="' + e.target.result + '" alt="Preview" class="image-preview" onerror="this.src=\'' + placeholderUrl + '\'; this.onerror=null;">';
-            area.classList.add('has-image');
-        };
-        reader.readAsDataURL(input.files[0]);
+
+    if (!uploadArea || !input.files || !input.files[0]) {
+        return;
     }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadArea.innerHTML = '<img src="' + e.target.result + '" alt="Preview" class="image-preview" onerror="this.src=\'' + placeholderUrl + '\'; this.onerror=null;">';
+        uploadArea.classList.add('has-image');
+    };
+    reader.readAsDataURL(input.files[0]);
 }
 </script>
 @endsection

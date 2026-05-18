@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 abstract class BaseCrudController extends Controller
@@ -17,7 +17,9 @@ abstract class BaseCrudController extends Controller
 
     public function index()
     {
-        $records = call_user_func([$this->modelClass, 'all']);
+        $records = $this->newModel()
+            ->orderByDesc('id')
+            ->get();
 
         return view('admin.crud.index', [
             'title' => $this->resourceName,
@@ -39,16 +41,17 @@ abstract class BaseCrudController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->validateRequest($request);
-        $data = $this->handleFileUploads($request, $data);
-        call_user_func([$this->modelClass, 'create'], $data);
+        $data = $request->validate($this->validationRules());
+        $data = $this->processFileUploads($request, $data);
+        $this->newModel()->create($data);
 
-        return Redirect::route($this->routeName . '.index')->with('success', $this->resourceName . ' saved successfully.');
+        return Redirect::route($this->routeName . '.index')
+            ->with('success', $this->resourceName . ' saved successfully.');
     }
 
     public function edit($id)
     {
-        $record = call_user_func([$this->modelClass, 'findOrFail'], $id);
+        $record = $this->findRecord($id);
 
         return view('admin.crud.form', [
             'title' => $this->resourceName,
@@ -60,7 +63,7 @@ abstract class BaseCrudController extends Controller
 
     public function show($id)
     {
-        $record = call_user_func([$this->modelClass, 'findOrFail'], $id);
+        $record = $this->findRecord($id);
 
         return view('admin.crud.show', [
             'title' => $this->resourceName,
@@ -72,23 +75,26 @@ abstract class BaseCrudController extends Controller
 
     public function update(Request $request, $id)
     {
-        $record = call_user_func([$this->modelClass, 'findOrFail'], $id);
-        $data = $this->validateRequest($request);
-        $data = $this->handleFileUploads($request, $data, $record);
+        $record = $this->findRecord($id);
+        $data = $request->validate($this->validationRules());
+        $data = $this->processFileUploads($request, $data, $record);
         $record->update($data);
 
-        return Redirect::route($this->routeName . '.index')->with('success', $this->resourceName . ' updated successfully.');
+        return Redirect::route($this->routeName . '.index')
+            ->with('success', $this->resourceName . ' updated successfully.');
     }
 
     public function destroy($id)
     {
-        $record = call_user_func([$this->modelClass, 'findOrFail'], $id);
+        $record = $this->findRecord($id);
+        $this->deleteUploadedFiles($record);
         $record->delete();
 
-        return Redirect::route($this->routeName . '.index')->with('success', $this->resourceName . ' deleted successfully.');
+        return Redirect::route($this->routeName . '.index')
+            ->with('success', $this->resourceName . ' deleted successfully.');
     }
 
-    protected function validateRequest(Request $request): array
+    protected function validationRules(): array
     {
         $rules = [];
 
@@ -96,26 +102,55 @@ abstract class BaseCrudController extends Controller
             $rules[$name] = $meta['rules'] ?? 'nullable';
         }
 
-        return $request->validate($rules);
+        return $rules;
     }
 
-    protected function handleFileUploads(Request $request, array $data, $record = null): array
+    protected function processFileUploads(Request $request, array $data, ?Model $record = null): array
     {
         foreach ($this->fields as $name => $field) {
-            if ($field['type'] === 'file' && $request->hasFile($name)) {
-                $file = $request->file($name);
-                
-                // Delete old file if updating
-                if ($record && $record->{$name}) {
-                    Storage::disk('public')->delete($record->{$name});
-                }
-                
-                // Store new file
-                $path = $file->store('uploads', 'public');
-                $data[$name] = $path;
+            if ($field['type'] !== 'file') {
+                continue;
             }
+
+            if (! $request->hasFile($name)) {
+                continue;
+            }
+
+            if ($record && $record->{$name}) {
+                $this->deleteFile($record->{$name});
+            }
+
+            $data[$name] = $request->file($name)->store('uploads', 'public');
         }
 
         return $data;
+    }
+
+    protected function deleteUploadedFiles(Model $record): void
+    {
+        foreach ($this->fields as $name => $field) {
+            if ($field['type'] !== 'file') {
+                continue;
+            }
+
+            if ($record->{$name}) {
+                $this->deleteFile($record->{$name});
+            }
+        }
+    }
+
+    protected function deleteFile(string $path): void
+    {
+        Storage::disk('public')->delete($path);
+    }
+
+    protected function findRecord($id): Model
+    {
+        return $this->newModel()->findOrFail($id);
+    }
+
+    protected function newModel(): Model
+    {
+        return new $this->modelClass();
     }
 }

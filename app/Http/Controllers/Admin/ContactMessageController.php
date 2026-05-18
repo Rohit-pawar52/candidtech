@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
 class ContactMessageController extends Controller
@@ -18,20 +17,18 @@ class ContactMessageController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show(ContactMessage $contactMessage)
     {
-        $message = ContactMessage::findOrFail($id);
-
         return view('admin.contact-messages.show', [
-            'message' => $message,
+            'message' => $contactMessage,
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(ContactMessage $contactMessage)
     {
-        $message = ContactMessage::findOrFail($id);
-        $message->delete();
+        $contactMessage->delete();
 
-        return Redirect::route('admin.contact-messages.index')->with('success', 'Message deleted successfully.');
+        return Redirect::route('admin.contact-messages.index')
+            ->with('success', 'Message deleted successfully.');
     }
 }

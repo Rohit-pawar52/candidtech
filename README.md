@@ -17,6 +17,8 @@ This repository contains a Laravel application for the Candidtech Interiors home
   - Contact messages
 - Admin login using Laravel authentication and the `users` table
 - Seeded demo data matching the original static website
+- Banner, About section, and Company details are edit-only in the admin panel
+- About content is validated to a maximum of 1000 words
 
 ## Default admin login
 

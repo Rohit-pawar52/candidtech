@@ -17,18 +17,18 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard', [
-            'counts' => [
-                'banners' => Banner::count(),
-                'services' => Service::count(),
-                'abouts' => About::count(),
-                'features' => Feature::count(),
-                'projects' => Project::count(),
-                'testimonials' => Testimonial::count(),
-                'faqs' => Faq::count(),
-                'contactMessages' => ContactMessage::count(),
-                'companyDetails' => CompanyDetail::count(),
-            ],
-        ]);
+        $counts = [
+            'banners' => Banner::count(),
+            'services' => Service::count(),
+            'abouts' => About::count(),
+            'features' => Feature::count(),
+            'projects' => Project::count(),
+            'testimonials' => Testimonial::count(),
+            'faqs' => Faq::count(),
+            'contactMessages' => ContactMessage::count(),
+            'companyDetails' => CompanyDetail::count(),
+        ];
+
+        return view('admin.dashboard', compact('counts'));
     }
 }

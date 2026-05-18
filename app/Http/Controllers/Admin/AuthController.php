@@ -16,23 +16,28 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->back()->withErrors(['email' => 'Invalid admin credentials'])->withInput();
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            return redirect()->back()
+                ->withErrors(['email' => 'Invalid admin credentials'])
+                ->withInput();
         }
 
         $request->session()->regenerate();
 
         if (!Auth::user()->is_admin) {
             Auth::logout();
-            return redirect()->back()->withErrors(['email' => 'You do not have admin access'])->withInput();
+
+            return redirect()->back()
+                ->withErrors(['email' => 'You do not have admin access'])
+                ->withInput();
         }
 
-        return Redirect::route('admin.dashboard');
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     public function logout(Request $request)

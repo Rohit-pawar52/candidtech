@@ -18,28 +18,37 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home', [
-            'banner' => Banner::latest()->first(),
-            'services' => Service::all(),
-            'about' => About::latest()->first(),
-            'features' => Feature::all(),
-            'testimonials' => Testimonial::all(),
-            'projects' => Project::all(),
-            'faqs' => Faq::all(),
-            'company' => CompanyDetail::latest()->first(),
-        ]);
+        $banner = Banner::latest()->first();
+        $services = Service::all();
+        $about = About::latest()->first();
+        $features = Feature::all();
+        $testimonials = Testimonial::all();
+        $projects = Project::all();
+        $faqs = Faq::all();
+        $company = CompanyDetail::latest()->first();
+
+        return view('home', compact(
+            'banner',
+            'services',
+            'about',
+            'features',
+            'testimonials',
+            'projects',
+            'faqs',
+            'company'
+        ));
     }
 
     public function submitContact(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string',
         ]);
 
-        ContactMessage::create($request->only(['name', 'email', 'subject', 'message']));
+        ContactMessage::create($validated);
 
         return redirect()->back()->with('success', 'Your message has been sent successfully.');
     }

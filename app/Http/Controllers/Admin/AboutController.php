@@ -14,4 +14,21 @@ class AboutController extends BaseCrudController
         'content' => ['label' => 'Content', 'type' => 'textarea', 'rules' => 'nullable|string'],
         'image' => ['label' => 'Image', 'type' => 'file', 'rules' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120'],
     ];
+
+    protected function validationRules(): array
+    {
+        $rules = parent::validationRules();
+
+        $rules['content'] = [
+            'nullable',
+            'string',
+            function ($attribute, $value, $fail) {
+                if (str_word_count(strip_tags($value)) > 1000) {
+                    $fail('The ' . str_replace('_', ' ', $attribute) . ' may not be greater than 1000 words.');
+                }
+            },
+        ];
+
+        return $rules;
+    }
 }
