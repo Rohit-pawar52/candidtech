@@ -39,7 +39,11 @@ This repository contains a Laravel application for the Candidtech Interiors home
    ```bash
    php artisan migrate --seed
    ```
-6. Start the development server:
+6. Create the storage symlink for public file uploads:
+   ```bash
+   php artisan storage:link
+   ```
+7. Start the development server:
    ```bash
    php artisan serve
    ```
@@ -49,6 +53,18 @@ Open the website at `http://127.0.0.1:8000`.
 ## Admin panel
 
 Visit `http://127.0.0.1:8000/admin/login` and sign in with the default admin credentials.
+
+### File uploads
+
+The admin panel supports direct file uploads for:
+- Banner background images
+- Service icons
+- Feature icons
+- Project images
+- Testimonial avatars
+- About section images
+
+Uploaded files are stored in `storage/app/public/uploads/` and are accessible via `/storage/uploads/filename`.
 
 ## Seed data
 
