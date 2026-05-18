@@ -56,7 +56,7 @@
 
 <div class="owl-slide owl-carousel">
     <div class="item">
-        <img src="{{ asset($banner->background_image ?? 'upload/s1.jpeg') }}">
+        <img src="@if(!empty($banner->background_image)){{ asset('storage/' . $banner->background_image) }}@else{{ asset('upload/s1.jpeg') }}@endif">
         <div class="desc">
             <h1>{{ $banner->title ?? 'Design the space' }}<br>{{ $banner->subtitle ?? 'Engineer the experience' }}</h1>
             @if(!empty($banner->button_text))
@@ -72,7 +72,7 @@
             <div class="col-md-6" data-aos="fade-right" data-aos-duration="700">
                 <div class="about-img">
                     @if(!empty($about->image))
-                        <figure class="shine"><img src="{{ asset($about->image) }}"></figure>
+                        <figure class="shine"><img src="{{ asset('storage/' . $about->image) }}"></figure>
                     @else
                         <figure class="shine"><img src="{{ asset('upload/about1.jpeg') }}"></figure>
                     @endif
@@ -116,7 +116,7 @@
         <div class="owl-4 owl-carousel">
             @forelse($services as $service)
                 <a class="item" href="{{ $service->link ?? '#' }}">
-                    <img class="w-100" src="{{ asset($service->icon ?? 'upload/service1.jpeg') }}" alt="{{ $service->title }}">
+                    <img class="w-100" src="@if(!empty($service->icon)){{ asset('storage/' . $service->icon) }}@else{{ asset('upload/service1.jpeg') }}@endif" alt="{{ $service->title }}">
                     <div class="desc">
                         <h4>{{ $service->title }}</h4>
                         <p>{{ $service->description }}</p>
@@ -186,7 +186,7 @@
                                 <span class="count"></span>
                                 <div class="icon">
                                     @if($feature->icon)
-                                        <img src="{{ asset($feature->icon) }}" alt="{{ $feature->title }}">
+                                        <img src="{{ asset('storage/' . $feature->icon) }}" alt="{{ $feature->title }}">
                                     @else
                                         <img src="{{ asset('upload/trust.png') }}" alt="Feature">
                                     @endif
@@ -219,7 +219,7 @@
                 <div class="item">
                     <div class="item-inner d-flex align-items-center gap-3">
                         <div class="item-thumb">
-                            <img src="{{ asset($testimonial->avatar ?? 'upload/face.jpg') }}" alt="{{ $testimonial->name }}">
+                            <img src="@if(!empty($testimonial->avatar)){{ asset('storage/' . $testimonial->avatar) }}@else{{ asset('upload/face.jpg') }}@endif" alt="{{ $testimonial->name }}">
                         </div>
                         <div class="item-content">
                             <h4>{{ $testimonial->name }}</h4>
@@ -253,7 +253,7 @@
         <div class="row g-4">
             @forelse($projects as $project)
                 <div class="col-md-4">
-                    <a class="item" href="{{ asset($project->image ?? 'upload/service1.jpeg') }}"><img src="{{ asset($project->image ?? 'upload/service1.jpeg') }}"></a>
+                    <a class="item" href="@if(!empty($project->image)){{ asset('storage/' . $project->image) }}@else{{ asset('upload/service1.jpeg') }}@endif"><img src="@if(!empty($project->image)){{ asset('storage/' . $project->image) }}@else{{ asset('upload/service1.jpeg') }}@endif"></a>
                 </div>
             @empty
                 <div class="col-md-12">
